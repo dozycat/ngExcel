@@ -6,7 +6,7 @@
 
 (function () {
     'use strict';
-    angular.module('XXX').directive('ngExcel', [
+    angular.module('angularGulp').directive('ngExcel', [
         '$q',
         ngExcel
     ]);
@@ -16,11 +16,11 @@
             restrict: 'AE',
             require: '',
             scope: {
-                // data Type
+                // 类型
                 type: '=type',
-                // data
+                // 数据
                 data: '=data',
-                // download file name
+                // 下载文件名
                 xlsfilename: '=xlsfilename'
             },
             template: '<a class="ng-excel" download="test.xls" ng-click="exportTo(type, data)">'
@@ -28,6 +28,12 @@
             link: function (scope, elm, attrs) {
                 var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
                 var fromCharCode = String.fromCharCode;
+                var self = window;
+                var toString = function (a) {
+                        return String(a);
+                }
+                // 兼容不容浏览器
+                var myBlob = (self.Blob || self.MozBlob || self.WebKitBlob || toString);
                 var ExcelExport = function () {
                     var version = '1.3';
                     var csvSeparator = ',';
@@ -53,17 +59,18 @@
                             return c[p];
                         });
                     };
+                    
                     var excel = function (data) {
                         var worksheets = '';
                         var ctx = {};
-                        // debug
+                        // 容错
                         if ((typeof(data) === 'undefined') || (data.length === 0)) {
                             data = [{
-                                name: 'no data',
-                                data: [['no data']]
+                                name: '无数据',
+                                data: [['无数据，请查询后再下载~']]
                             }, {
-                                name: 'introduce',
-                                data: [['data = [{name:\'sheetname\',data:[[]]}]'], ['xlsfilename=outputfileName.xls']]
+                                name: '使用说明',
+                                data: [['data = [{name:\'表名\',data:[[]]}]'], ['xlsfilename=输出文文件名']]
                             }];
                         }
                         for (var x in data) {
@@ -71,6 +78,7 @@
                             var sheetContent = '';
                             var sheetName = sheet.name;
                             var sheetData = sheet.data;
+                            // 容错
                             if (typeof(sheetName) === 'undefined') {
                                 sheetName = 'data';
                             }
@@ -108,16 +116,60 @@
                 var exportTools = new ExcelExport();
 
                 var doClick = function (url) {
-                    var downloadContainer = angular.element('<div data-tap-disabled="true"><a></a></div>');
-                    var downloadLink = angular.element(downloadContainer.children()[0]);
-                    downloadLink.attr('href', url);
+                    // data to blob
+                    var dataUrlToBlob = function (strUrl) {
+                        var parts= strUrl.split(/[:;,]/),
+                        type = parts[1],
+                        decoder = (parts[2] === "base64") ? atob : decodeURIComponent,
+                        binData = decoder(parts.pop()),
+                        mx = binData.length,
+                        i = 0,
+                        uiArr = new Uint8Array(mx);
+                        for(i;i < mx; ++i)
+                            {
+                                uiArr[i]= binData.charCodeAt(i);
+                            }
+                        return new myBlob([uiArr], {type: 'application/vnd.ms-excel'});
+                    }
+                    var anchor = document.createElement('a');
                     if (typeof (scope.xlsfilename) === 'undefined') {
                         scope.xlsfilename = 'res.xls';
                     }
-                    downloadLink.attr('download', scope.xlsfilename);
-                    downloadLink.attr('target', '_blank');
-                    downloadLink[0].click();
-                    downloadLink.remove();
+                    if (url.length < 1024*1024*1.999) {
+                        if ('download' in anchor) { //html5 A[download]
+                                anchor.href = url;
+                                anchor.setAttribute("download", scope.xlsfilename);
+                                anchor.className = "download-js-link";
+                                anchor.innerHTML = "downloading...";
+                                anchor.style.display = "none";
+                                document.body.appendChild(anchor);
+                                setTimeout(function() {
+                                    anchor.click();
+                                    document.body.removeChild(anchor);
+                                }, 1000);
+                                return true;
+                            }
+                    } else {
+                        // excel 文件比较大的时候使用blob进行二进制编解码.
+                        // support big file ^-^
+                        if(myBlob !== toString ){
+                            var blob = dataUrlToBlob(url);
+                            url = URL.createObjectURL(blob);
+                            if ('download' in anchor) { //html5 A[download]
+                                anchor.href = url;
+                                anchor.setAttribute("download", scope.xlsfilename);
+                                anchor.className = "download-js-link";
+                                anchor.innerHTML = "downloading...";
+                                anchor.style.display = "none";
+                                document.body.appendChild(anchor);
+                                setTimeout(function() {
+                                    anchor.click();
+                                    document.body.removeChild(anchor);
+                                }, 100);
+                                return true;
+                            }
+                        }
+                    }
                 };
                 scope.exportTo = function (type, data) {
                     scope.url = '';
