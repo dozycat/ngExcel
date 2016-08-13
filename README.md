@@ -17,6 +17,7 @@ change
 'XXX' to your module name.
 		
 ## Second: 
+方法1：支持图标，点击下载。
 ```js
 	$scope.data = 
 	{
@@ -27,7 +28,16 @@ change
 ```html
 	<div ng-excel="" type="'excel'" data="data" xlsfilename="'media_wave_data.xls'" >
 ```
-
-                            
-                            
+方法2: 支持函数，可以想怎么做就怎么做。
+```
+ $scope.toolsbox.click = function (v) {
+    var table = [....];
+    $scope.excleTools.data = data;
+    $scope.excleTools.down(data);
+};             
+<div class="download" ng-show="false">
+    <div ng-excel="" type="'excel'" data="excleTools.data" xlsfilename="'dashboard.xls'" down="excleTools.down">
+    </div>
+</div>               
+```               
 ## Dep: anjularjs 1.4.2

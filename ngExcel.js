@@ -21,7 +21,9 @@
                 // 数据
                 data: '=data',
                 // 下载文件名
-                xlsfilename: '=xlsfilename'
+                xlsfilename: '=xlsfilename',
+                // 下载
+                down: '=?down'
             },
             template: '<a class="ng-excel" download="test.xls" ng-click="exportTo(type, data)">'
             + '<span class="glyphicon glyphicon-download-alt" ></span></a>',
@@ -179,6 +181,11 @@
                         scope.url = e;
                     }
 
+                };
+                scope.down = function (data) {
+                    var data = data || scope.data;
+                    var type = scope.type;
+                    scope.exportTo(type, data);
                 };
             }
         };
