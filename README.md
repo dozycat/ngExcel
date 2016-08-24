@@ -11,6 +11,9 @@ This little project is to create a easy way to export data to ngExcel and downlo
 ### ~ support big file by blob.
 
 #how to use .
+
+## NPM
+    npm install ng-excel
 ## First:  
 change
 	angular.module('XXX').directive('ngExcel', []  
