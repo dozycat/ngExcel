@@ -16,6 +16,8 @@ This little project is to create a easy way to export data to ngExcel and downlo
 
 ## NPM
     npm install ng-excel
+## bower
+    bower install ng-excel
 ## First:  
 change
 	angular.module('XXX').directive('ngExcel', []  
