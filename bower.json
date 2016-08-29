@@ -1,0 +1,21 @@
+{
+  "name": "ng-excel",
+  "description": "this is a anjularjs-directive to download file from client. This little project is to create a easy way to export data to ngExcel and download only with anjular-js;",
+  "main": "ngExcel.js",
+  "authors": [
+    "duzeyu"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "ng-excel",
+    "ngExcel"
+  ],
+  "homepage": "https://github.com/dozycat/ngExcel",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
