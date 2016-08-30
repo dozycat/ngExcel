@@ -1,6 +1,6 @@
 {
   "name": "ng-excel",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "this is a anjularjs-directive to download file from client. This little project is to create a easy way to export data to ngExcel and download only with anjular-js;",
   "main": "ngExcel.js",
   "scripts": {
