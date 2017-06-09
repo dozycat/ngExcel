@@ -3,6 +3,8 @@ when making project faced a problem.
 we need a anjularjs-directive to download file from client.
 This little project is to create a easy way to export data to ngExcel and download;
 
+[Now only support excel like *.xls]
+
 ## CHANGES
 ##V1.01
 ### ~ support muti-sheet
